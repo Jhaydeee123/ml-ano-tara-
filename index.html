@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ML Interview 💙</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    overflow:hidden;
+    height:100vh;
+    background:linear-gradient(135deg,#cdefff,#dff6ff,#b8e8fc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.35);
+    backdrop-filter:blur(15px);
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    max-width:500px;
+}
+
+/* BUTTONS */
+.btn{
+    padding:12px 22px;
+    border:none;
+    border-radius:12px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:10px;
+}
+
+.yes{
+    background:#5baee2;
+    color:white;
+}
+
+.no{
+    background:#ff5c8a;
+    color:white;
+    position:absolute;
+}
+
+/* SCREEN */
+.screen{
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+/* ENVELOPE */
+.envelope{
+    width:320px;
+    height:220px;
+    position:relative;
+    cursor:pointer;
+}
+
+.back,.left,.right,.bottom,.top{
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+
+.back{background:#7ec8f5;border-radius:12px;}
+.left{background:#6dbceb;clip-path:polygon(0 0,50% 50%,0 100%);}
+.right{background:#63b4e4;clip-path:polygon(100% 0,50% 50%,100% 100%);}
+.bottom{background:#78c5f3;clip-path:polygon(0 100%,50% 50%,100% 100%);}
+.top{
+    background:#5baee2;
+    clip-path:polygon(0 0,50% 55%,100% 0);
+    transform-origin:top;
+    transition:1s;
+}
+
+.open .top{
+    transform:rotateX(180deg);
+}
+
+/* LETTER */
+.letter-page{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(180deg,#e8f8ff,#d8f1ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    opacity:0;
+    pointer-events:none;
+    transition:1s;
+}
+
+.show-letter{
+    opacity:1;
+    pointer-events:auto;
+}
+
+/* POPUP */
+.popup{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    opacity:0;
+    pointer-events:none;
+}
+
+.popup img{
+    width:220px;
+    height:220px;
+    border-radius:20px;
+}
+
+.popup h2{
+    color:white;
+    margin-top:15px;
+}
+
+/* OK BUTTON */
+#okBtn{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:#5baee2;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* SHOW */
+.show{
+    opacity:1;
+    pointer-events:auto;
+}
+
+/* TYPING TEXT */
+.typing{
+    margin-top:10px;
+    color:white;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- INTERVIEW -->
+<div class="screen" id="quiz">
+
+    <div class="card">
+
+        <h2 id="question">ML Interview 💙</h2>
+
+        <button class="btn yes" id="yesBtn">YES</button>
+        <button class="btn no" id="noBtn">NO</button>
+
+    </div>
+
+</div>
+
+<!-- ENVELOPE -->
+<div class="screen" id="main" style="display:none;">
+
+    <div class="envelope" id="envelope">
+
+        <div class="back"></div>
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="bottom"></div>
+        <div class="top"></div>
+
+    </div>
+
+</div>
+
+<!-- LETTER -->
+<div class="letter-page" id="letterPage">
+
+    <div class="card">
+
+        <h2>hi gab 💙 ML tips</h2>
+
+        <p style="margin-top:15px; line-height:2; color:#4b6474;">
+
+            sa early game mag farm ka muna ng minions 💙<br><br>
+
+            sa turtle fight sumama ka lagi sa team<br><br>
+
+            sa lord fight focus lang lagi tayo sa lord pag may lumapit hero muna<br><br>
+
+            kaya mo yan hanabi gods ka 😄
+
+        </p>
+
+        <button id="okBtn">OK 💙</button>
+
+    </div>
+
+</div>
+
+<!-- POPUP IMAGE -->
+<div class="popup" id="popup">
+
+    <img src="https://cdn.corenexis.com/files/c/2959423720.png">
+
+    <div class="typing" id="typing"></div>
+
+</div>
+
+<!-- MUSIC -->
+<audio id="music" loop>
+<source src="https://videotourl.com/audio/1778267121062-18aee44c-0377-482f-ae23-84376143e986.mp3">
+</audio>
+
+<script>
+
+const questions = [
+    "nag hahanabi kaba? 🎮",
+    "gusto moba ako support mo? 😏",
+    "Gusto mo ba manalo lagi? 💙",
+    "Final: gusto mo ba ako ka duo? 👉👈💙"
+];
+
+let step = 0;
+let musicStarted = false;
+
+const q = document.getElementById("question");
+const yes = document.getElementById("yesBtn");
+const no = document.getElementById("noBtn");
+
+const quiz = document.getElementById("quiz");
+const main = document.getElementById("main");
+
+const letter = document.getElementById("letterPage");
+
+const envelope = document.getElementById("envelope");
+
+const popup = document.getElementById("popup");
+const typing = document.getElementById("typing");
+
+const music = document.getElementById("music");
+
+/* LOAD */
+function load(){
+    q.innerText = questions[step];
+}
+load();
+
+/* FINAL NO MOVE */
+function isFinal(){
+    return step === questions.length - 1;
+}
+
+no.addEventListener("mouseover", ()=>{
+    if(isFinal()){
+        no.style.position="absolute";
+        no.style.top=Math.random()*80+"%";
+        no.style.left=Math.random()*80+"%";
+    }
+});
+
+/* YES CLICK */
+yes.addEventListener("click", ()=>{
+
+    if(!musicStarted){
+        music.currentTime = 30;
+        music.play();
+        musicStarted = true;
+    }
+
+    step++;
+
+    if(step < questions.length){
+        load();
+    }else{
+        quiz.style.display="none";
+        main.style.display="flex";
+    }
+
+});
+
+/* ENVELOPE */
+envelope.addEventListener("click", ()=>{
+
+    envelope.classList.add("open");
+
+    setTimeout(()=>{
+        letter.classList.add("show-letter");
+    },900);
+
+});
+
+/* OK BUTTON → SHOW IMAGE + TEXT */
+document.getElementById("okBtn").addEventListener("click", ()=>{
+
+    popup.classList.add("show");
+
+    typeText("nice one idol 💙", typing, 100);
+
+});
+
+/* TYPING EFFECT */
+function typeText(text, el, speed){
+    el.innerHTML="";
+    let i=0;
+
+    function run(){
+        if(i < text.length){
+            el.innerHTML += text[i];
+            i++;
+            setTimeout(run, speed);
+        }
+    }
+
+    run();
+}
+
+</script>
+
+</body>
+</html>
